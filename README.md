@@ -38,21 +38,21 @@ In the current state the gateway only works for one HubiC Client which needs to 
 
 ### Configuring the gateway:
 
-* rename config.php.sample to config.php and put your Client ID and Client Secret in there.
+* rename config.php.sample to config.php and put your Password, Client ID and Client Secret in there.
 * change permission on "cache" folder to allow apache to store data there
 * make sure the .htaccess is used or configure your virtual server similar
 
 **To register the gateway with hubic visit:**
 
-https://yourserver.com/register/
+https://yourserver.com/register/?user=hubic&password=mypassword
 
-If everything is working you are redirected to the Hubic Client Authentication Site. There you need to login with the data of your HubiC account.
+If everything is working you are redirected to the Hubic Client Authentication Site. There you need to login with the data of the HubiC account which should be connected to this user (currently only one user 'hubic' is supported).
 
-After that you get redirected back to your server which should take the code and redirect again to a "success" page.
+After that you get redirected back to your server which should take the code and redirect again to a simple "success" page.
 
-To verify that it worked you can access: https://yourserver.com/usage/ which should show you a brief space usage report.
+To verify that it worked you can access: https://yourserver.com/usage/ which should show you a brief space usage report (this is not protected with a password so 'everybody' can see the usage of the client right now).
 
-I am using the client id and secret for "pseudo" authentication only with the swift clients at the swift gateway.
+I am using the the user "hubic" and the password from the config.php for "pseudo" authentication with the swift clients. This allows to hide everything hubic related from the user of the swift-client.
 
 The real authentication is done with the OAuth2 tokens from the Hubic API "in the background" which then gets the OpenStack Tokens for the API to the filestorage.
 
@@ -63,8 +63,8 @@ To use it with "any" client supporting openstack swift protocol you need to set 
 <pre>
 # HubiC for swift and duplicity
 export ST_AUTH='https://yourserver.com/auth/v1.0/'
-export ST_USER='api_hubic_xxx...'
-export ST_KEY='xxx...'
+export ST_USER='hubic' // fixed atm
+export ST_KEY='mypassword' // from config.php
 
 export SWIFT_AUTHURL=$ST_AUTH
 export SWIFT_USERNAME=$ST_USER

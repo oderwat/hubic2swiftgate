@@ -22,6 +22,7 @@
 define('CACHEPATH',dirname(__FILE__).'/../cache');
 define('CONFIGFILE',dirname(__FILE__).'/../config.php');
 
+// this reads the clients (but only supports one with name hubic right now!)
 include(CONFIGFILE);
 
 /*
@@ -41,10 +42,19 @@ function logfile($txt) {
 
 function internal_error($txt){
 	header("HTTP/1.0 500 Internal Server Error");
+	nocache();
 	if($txt) {
 		print($txt);
 	}
 	die();
+}
+
+function nocache() {
+	header("Expires: Mon, 1 Jan 2000 00:00:00 GMT");
+	header("Last-Modified: ".gmdate("D, d M Y H:i:s")." GMT");
+	header("Cache-Control: no-store, no-cache, must-revalidate");
+	header("Cache-Control: post-check=0, pre-check=0",false);
+	header("Pragma: no-cache");
 }
 
 function format_bytes($bytes, $precision = 2) {
@@ -76,9 +86,14 @@ if(!is_writable(CACHEPATH)) {
 
 $redirect_uri="https://".$_SERVER['SERVER_NAME']."/callback/";
 
+$client='hubic'; // fixed for now
+
+$client_id=$clients[$client]['client_id'];
+$client_secret=$clients[$client]['client_secret'];
+
 $basic_auth=base64_encode($client_id.':'.$client_secret);
 
-$cacheKey=$client_id;
+$cacheKey=md5($client);
 
 $mode=false;
 
@@ -122,12 +137,14 @@ switch($request) {
 
 if($mode=='home') {
 	header('HTTP/1.0 200 OK');
+	nocache();
 	print('<h3>Welcome to the Hubic to Switft Gateway!</h3><p>If you want to run your own HubiC To Swift Gateway you can fork the software at <a href="https://github.com/oderwat/hubic2swiftgate">GitHub</a>!</p><br><span style="font-size:10px">Software development and hosting sponsored by <a href="http://metatexx.de/">METATEXX GmbH</a></span>');
 	die();
 }
 
 if(!$mode) {
 	header('HTTP/1.0 404 Not Found');
+	nocache();
 	print("Not Found!");
 	die();
 }
@@ -136,6 +153,7 @@ if($mode=='swift') {
 	// Get Auth from Headers to artificially limit access!
 	if (!isset($_SERVER['HTTP_X_AUTH_USER']) || !isset($_SERVER['HTTP_X_AUTH_KEY'])) {
 		header("HTTP/1.0 403 Forbidden");
+		nocache();
 		print('AUTH_USER and/or AUTH_KEY are missing!');
 		die();
 	} else {
@@ -143,8 +161,9 @@ if($mode=='swift') {
 		$auth_key = $_SERVER['HTTP_X_AUTH_KEY'];
 	}
 
-	if($auth_user!=$client_id || $auth_key!=$client_secret) {
+	if($auth_user!=$client || $auth_key!=$clients[$client]['password']) {
 		header('HTTP/1.0 403 Access Denied');
+		nocache();
 		print("ERROR : Access Denied");
 		die();
 	}
@@ -152,19 +171,28 @@ if($mode=='swift') {
 
 if($mode=='success') {
 	header('HTTP/1.0 200 OK');
+	nocache();
 	print("Success: This Server is now registered with HubiC Filestorage!");
 	die();
 }
 
 // User auf die Api Register Seite schicken
 if($mode=='register') {
+	if(!isset($_GET['client']) || $_GET['client']!=$client ||
+		!isset($_GET['password']) || $_GET['password']!=$clients[$client]['password']) {
+		header('HTTP/1.0 403 Access Denied');
+		nocache();
+		print("ERROR : Access Denied! Wrong Client or Password");
+		die();
+	}
 	$uri='https://api.hubic.com/oauth/auth/?';
 	$uri.='client_id='.$client_id;
 	$uri.='&redirect_uri='.urlencode($redirect_uri);
 	$uri.='&scope=usage.r,account.r,getAllLinks.r,credentials.r,activate.w,links.drw';
 	$uri.='&response_type=code';
-	$uri.='&state='.$client_id.':123qweasd';
+	$uri.='&state='.$client.':'.md5($clients[$client]['client_id']);
 	header('HTTP/1.0 301 Redirect');
+	nocache();
 	header("Location: ".$uri);
 	die();
 }
@@ -175,12 +203,16 @@ $refresh_token=false;
 
 if($mode=='callback') {
 	// we return from OAuth2 on HubiC Site
-	if(!isset($_GET['code'])) {
+	if(!isset($_GET['code']) || !isset($_GET['state']) ||
+		$_GET['state']!=$client.':'.md5($clients[$client]['client_id'])) {
 		header('HTTP/1.0 412 Precondition failed');
+		nocache();
 		print("Illegal!");
 		die();
 	}
 	$code=$_GET['code'];
+	$
+	$uri.='&state='.$client.':'.md5($clients[$client]['client_id']);
 
 	$c = curl_init('https://api.hubic.com/oauth/token/');
 	curl_setopt($c, CURLOPT_HTTPHEADER, array(
@@ -201,6 +233,7 @@ if($mode=='callback') {
 	$error = curl_error($c);
 	if ($http_retcode !== 200) {
 		header('HTTP/1.0 ' . $http_retcode);
+		nocache();
 		print("ERROR 99: ".$error);
 		die();
 	}
@@ -230,6 +263,7 @@ if (file_exists(CACHEPATH.'/'.$cacheKey)) {
 		header('X-Auth-Token: '.$cached['os_token']);
 		//header('HTTP/1.0 204 No Content');
 		header('HTTP/1.0 200 OK');
+		nocache();
 		die();
 	}
 
@@ -260,6 +294,7 @@ if(!$access_token || $access_expires<time()) {
 	$error = curl_error($c);
 	if ($http_retcode !== 200) {
 		header('HTTP/1.0 ' . $http_retcode);
+		nocache();
 		print("ERROR 178: ".$error);
 		die();
 	}
@@ -287,6 +322,7 @@ if($mode=='usage') {
 	$error = curl_error($c);
 	if ($http_retcode !== 200) {
 		header('HTTP/1.0 ' . $http_retcode);
+		nocache();
 		print("ERROR 207 : ".$error);
 		print_r('access token: '.$access_token);
 		flush();
@@ -314,6 +350,7 @@ $http_retcode = curl_getinfo($c, CURLINFO_HTTP_CODE);
 $error = curl_error($c);
 if ($http_retcode !== 200) {
 	header('HTTP/1.0 ' . $http_retcode);
+	nocache();
 	print("ERROR 207 : ".$error);
 	die();
 }
@@ -333,12 +370,15 @@ file_put_contents(CACHEPATH.'/'.$cacheKey,serialize(
 
 if($mode=='callback') {
 	header('HTTP/1.0 301 Redirect');
+	nocache();
 	header('Location: https://'.$_SERVER['HTTP_HOST'].'/success/');
 } else if($mode=='swift') {
 	header('X-Storage-Url: '.$storage->endpoint);
 	header('X-Auth-Token: '.$storage->token);
 	header('HTTP/1.0 204 No Content');
+	nocache();
 } else {
 	header('HTTP/1.0 404 Not Found');
+	nocache();
 	print("Not Found!");
 }

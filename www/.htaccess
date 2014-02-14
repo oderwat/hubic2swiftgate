@@ -1,4 +1,4 @@
 RewriteEngine on
 #RewriteCond %{REQUEST_FILENAME} !-d
 #RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule . simple.php [L,T=application/x-httpd-php]
+RewriteRule .* simple.php [L,T=application/x-httpd-php]

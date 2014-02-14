@@ -261,8 +261,8 @@ if (file_exists(CACHEPATH.'/'.$cacheKey)) {
 		// OS Token still valid
 		header('X-Storage-Url: '.$cached['os_endpoint']);
 		header('X-Auth-Token: '.$cached['os_token']);
-		//header('HTTP/1.0 204 No Content');
-		header('HTTP/1.0 200 OK');
+		header('HTTP/1.0 204 No Content');
+		//header('HTTP/1.0 200 OK');
 		nocache();
 		die();
 	}
@@ -376,6 +376,7 @@ if($mode=='callback') {
 	header('X-Storage-Url: '.$storage->endpoint);
 	header('X-Auth-Token: '.$storage->token);
 	header('HTTP/1.0 204 No Content');
+//	header('HTTP/1.0 200 OK'); // dulwich swift-repo does not understand 204
 	nocache();
 } else {
 	header('HTTP/1.0 404 Not Found');

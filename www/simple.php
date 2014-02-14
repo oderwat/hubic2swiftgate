@@ -74,7 +74,7 @@ if(!is_writable(CACHEPATH)) {
 	internal_error(CACHEPATH .' is not writable');
 }
 
-$redirect_uri="https://".$_SERVER['SERVER_NAME']."/";
+$redirect_uri="https://".$_SERVER['SERVER_NAME']."/callback/";
 
 $basic_auth=base64_encode($client_id.':'.$client_secret);
 
@@ -105,9 +105,7 @@ switch($request) {
 		break;
 
 	case '/':
-		if(isset($_GET['code'])) {
-			$mode='callback';
-		}
+		$mode='home';
 		break;
 
 	case '/callback':
@@ -120,6 +118,12 @@ switch($request) {
 		$mode='success';
 		break;
 
+}
+
+if($mode=='home') {
+	header('HTTP/1.0 200 OK');
+	print('<h3>Welcome to the Hubic to Switft Gateway!</h3><p>If you want to run your own HubiC To Swift Gateway you can fork the software at <a href="https://github.com/oderwat/hubic2swiftgate">GitHub</a>!</p><br><span style="font-size:10px">Software development and hosting sponsored by <a href="http://metatexx.de/">METATEXX GmbH</a></span>');
+	die();
 }
 
 if(!$mode) {

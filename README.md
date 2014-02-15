@@ -12,8 +12,8 @@ But they encourage user to use the API and allow access to non default container
 
 **While using a real (non self-signed) certificate I got 100% compabillity with:**
 
-* [Duplicity][] THE backup solution with encryption and diff (using: swift:// backend, this was added in 0.6.22 afaik)
-* [Python-SwiftClient][] command line client - very useful (up to version 1.9 currently)
+* [Duplicity](#Duplicity) - THE backup solution with encryption and diff (using: swift:// backend, this was added in 0.6.22 afaik)
+* [Python-SwiftClient](#Python-SwiftClient) - Command line client. Very useful (up to version 1.9 currently)
 * CyberDuck - FTP like access to all containers (using 'Swift')
 * ExpanDrive2 - Mounts your HubiC Storage as external Drive (Select 'Open Stack Swift Storage. This really needs a __non self-signed__ certificate!)
 

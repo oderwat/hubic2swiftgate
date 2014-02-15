@@ -84,7 +84,14 @@ if(!is_writable(CACHEPATH)) {
 	internal_error(CACHEPATH .' is not writable');
 }
 
-$redirect_uri="https://".$_SERVER['SERVER_NAME']."/callback/";
+$port='';
+if($_SERVER['SERVER_PORT']!=443) {
+	$port=":".$_SERVER['SERVER_PORT'];
+} else {
+	$port='';
+}
+
+$redirect_uri="https://".$_SERVER['SERVER_NAME'].$port."/callback/";
 
 $client='hubic'; // fixed for now
 

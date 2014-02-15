@@ -34,7 +34,8 @@ In the current state the gateway only works for one HubiC Client which needs to 
 * Click onto account details
 * Add a new personal client app in the developer section
 * You can choose any name you like (e.g. SwiftGate)
-* Redirect URL needs to point to https://yourserver.com/callback/ (currently https://yourserver.com/ works too)
+* Redirect URL needs to point to https://yourserver.com(:port)/callback/ (Important: Only add non standard ports, for 443 do not add a port in the url!)
+
 
 ### Configuring the gateway:
 

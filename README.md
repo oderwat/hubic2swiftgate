@@ -44,7 +44,7 @@ In the current state the gateway only works for one HubiC Client which needs to 
 
 **To register the gateway with hubic visit:**
 
-https://yourserver.com/register/?user=hubic&password=mypassword
+https://yourserver.com/register/?client=hubic&password=mypassword
 
 If everything is working you are redirected to the Hubic Client Authentication Site. There you need to login with the data of the HubiC account which should be connected to this user (currently only one user 'hubic' is supported).
 

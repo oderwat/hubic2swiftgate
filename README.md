@@ -1,6 +1,12 @@
-# This is a HubiC to OpenStack Swift Gateway (hubic2swiftgate)
+# HubiC to OpenStack Swift Gateway
 
-It supports OAuth2 with api.hubic.com and has to be installed on an apache2 webserver using a ssl-certificate.
+With HubiC currently offering 10 TB (yes 10.000 GB) for 10,- Euro a month it becomes extremly interesting as datastorage for multiple and automated tasks!
+
+As HubiC exposes an OpenStack Swift API to the developer the idea to use it with existing swift client implementations is a natural thing.
+
+Sadly the HubiC authorisation is currently limited to OAuth2. This is those thing wich redirects you to a Website where you have to agree to connect your Account to a client. You know these ones!
+
+To close this gap I made: hubic2swiftgate. A gateway which supports OAuth2 with api.hubic.com and has to be installed on an apache2 webserver using a ssl-certificate.
 
 ## Warning!
 

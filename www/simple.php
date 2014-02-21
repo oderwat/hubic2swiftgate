@@ -218,7 +218,6 @@ if($mode=='callback') {
 		die();
 	}
 	$code=$_GET['code'];
-	$
 	$uri.='&state='.$client.':'.md5($clients[$client]['client_id']);
 
 	$c = curl_init('https://api.hubic.com/oauth/token/');
@@ -239,9 +238,9 @@ if($mode=='callback') {
 	$http_retcode = curl_getinfo($c, CURLINFO_HTTP_CODE);
 	$error = curl_error($c);
 	if ($http_retcode !== 200) {
-		header('HTTP/1.0 ' . $http_retcode);
+		header('HTTP/1.0 200');
 		nocache();
-		print("ERROR 99: ".$error);
+		print("HubiC api server responded with return code: ".$http_retcode);
 		die();
 	}
 

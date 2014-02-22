@@ -48,6 +48,8 @@ I suppose you have the code run in an apache2 server with php, curl, mod_rewrite
 
 The docroot of a virtual server is pointing at the root of this project and asume the server is available under https://yourserver.com/ for this description.
 
+Here some more help for that: [Setting up Apache2 for Hubic2SwiftGate](#apachesetup)
+
 In the current state the gateway only works for one HubiC Client which needs to be registered in the HubiC account panel (developer section).
 
 ### Setting things up in you HubiC account:
@@ -115,5 +117,56 @@ Attention: I believe starting with 2.0 they broke support for "gzip" compressed 
     swift list --lh
     swift delete duplicity:server1:homes
     swift stat
+
+#### <a name="apache setup"></a>Setting up Apache2 for HubiC2SwiftGate
+
+I am not explaining how to get apache2 running in detail. Make sure you have php with curl extension, mod_ssl, mod_rewrite installed for your system. There is plenty of information about this on the net!
+
+After you got those installed you need to configure apache2 to run the gateway.
+
+First you need either a "real" (preferred) or self signed SSL certificate. On Linux and Mac you can create one like this:
+
+    openssl genrsa -des3 -passout pass:x -out server.pass.key 2048
+    openssl rsa -passin pass:x -in server.pass.key -out server.key
+    rm server.pass.key
+    openssl req -new -key server.key -out server.csr
+    openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
+
+You will be asked different stuff. The most important ist the "common name". There you need to enter the domain you want to use! It generates the private key **server.key** and the certificate **server.crt**. The file **server.csr** is the (reusable) certificate sign request.
+
+You can order a "real" certificate for free from different sources. I checked out COMODO in the past which give you a certificate which is valid for 90 day for free.
+
+Cautious: If you use a self signed certificate there may be problems with some of the clients. Sometimes you can deactivate certificate checking. It may even be possible to not use SSL at all. But I can't recommend this for software with these security relevance!
+
+After you got the certificates you can set up an apache virtual server *like* this:
+
+    <VirtualHost *:443>
+      ServerName hsgate.domain.name
+      DocumentRoot /var/www/hsgate/
+
+      SSLEngine on
+      SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP
+      SSLCertificateFile /etc/apache/ssl/server.crt
+      SSLCertificateKeyFile /etc/apache/ssl/server.key
+
+      CustomLog /var/logs/hsgate_ssl_access.log combined
+      ErrorLog /var/logs/hsgate_ssl_error.log
+
+      <Directory "/var/www/hsgate/">
+        Options Indexes FollowSymLinks
+        AllowOverride None
+        Order allow,deny
+        Allow from all
+      </Directory>
+
+      php_admin_flag engine on
+
+    </VirtualHost>
+
+*Notice: This is just an example. You need to adjust the paths for your system and maybe more*
+
+Depending on where you setup the server you may need to create a port mapping from outside in you router if you want to use the gateway from another than your own network.
+
+It is fine to install this all "inside" your own network as long as your local browser has access to it! You even can use localhost! My scope is different in that I am using the gateway from many different servers in different locations.
 
 P.S.: This work is dedicated to my friends from <a href="http://www.metatexx.de/#hsgate">METATEXX GmbH</a>!

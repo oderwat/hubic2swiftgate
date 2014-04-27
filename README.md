@@ -149,8 +149,8 @@ After you got the certificates you can set up an apache virtual server *like* th
       SSLCertificateFile /etc/apache/ssl/server.crt
       SSLCertificateKeyFile /etc/apache/ssl/server.key
 
-      CustomLog /var/logs/hsgate_ssl_access.log combined
-      ErrorLog /var/logs/hsgate_ssl_error.log
+      CustomLog /var/log/apache2/hsgate_ssl_access.log combined
+      ErrorLog /var/log/apache2/hsgate_ssl_error.log
 
       <Directory "/var/www/hsgate/">
         Options Indexes FollowSymLinks

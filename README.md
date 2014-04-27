@@ -154,7 +154,7 @@ After you got the certificates you can set up an apache virtual server *like* th
 
       <Directory "/var/www/hsgate/">
         Options Indexes FollowSymLinks
-        AllowOverride None
+        AllowOverride All
         Order allow,deny
         Allow from all
       </Directory>

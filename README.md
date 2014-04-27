@@ -146,8 +146,8 @@ After you got the certificates you can set up an apache virtual server *like* th
 
       SSLEngine on
       SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP
-      SSLCertificateFile /etc/apache/ssl/server.crt
-      SSLCertificateKeyFile /etc/apache/ssl/server.key
+      SSLCertificateFile /etc/apache2/ssl/server.crt
+      SSLCertificateKeyFile /etc/apache2/ssl/server.key
 
       CustomLog /var/log/apache2/hsgate_ssl_access.log combined
       ErrorLog /var/log/apache2/hsgate_ssl_error.log

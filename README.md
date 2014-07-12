@@ -22,6 +22,7 @@ But they encourage user to use the API and allow access to non default container
 * [Python-SwiftClient](#pythonswiftclient) - Command line client. Very useful (up to version 1.9 currently)
 * CyberDuck - FTP like access to all containers (using 'Swift')
 * ExpanDrive2 - Mounts your HubiC Storage as external Drive (Select 'Open Stack Swift Storage. This really needs a __non self-signed__ certificate!)
+* [CloudBerry Explorer](#cloudberry) - An Openstack filemanager
 
 **I got limited success with:**
 
@@ -100,6 +101,21 @@ To use it with "any" client supporting openstack swift protocol you need to set 
     mysqlhotcopy .... (making a snapshot of the mysql databases to backup)
     duplicity /backups/mysqlhotcopies swift://duplicity:server1:mysqldbs
     duplicity /home swift://duplicity:server1:homes
+    
+#### <a name="cloudberry"></a>CloudBerry Explorer
+
+Grab it here: http://www.cloudberrylab.com/free-openstack-storage-explorer.aspx
+
+Create a new open Openstack account
+
+    # Setting up like this    
+    
+    Uncheck "Use Keystone authentication"
+    
+    Display name: Choose a name for your account
+    User name: hubic
+    Api key: mypassword // from config.php
+    Authentication service: https://yourserver.com/auth/v1.0/
 
 #### <a name="pythonswiftclient"></a>Python-SwiftClient
 

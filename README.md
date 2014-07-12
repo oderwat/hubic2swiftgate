@@ -110,11 +110,12 @@ Create a new open Openstack Accound
 
     # Setting up like this    
     
+    Uncheck "Use Keystone authentication"
+    
     Display name: Choose a name for your account
     User name: hubic
     Api key: mypassword // from config.php
     Authentication service: https://yourserver.com/auth/v1.0/
-    Use Keystone auth : Uncheck
 
 #### <a name="pythonswiftclient"></a>Python-SwiftClient
 

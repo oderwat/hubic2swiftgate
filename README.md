@@ -106,7 +106,7 @@ To use it with "any" client supporting openstack swift protocol you need to set 
 
 Grab it here: http://www.cloudberrylab.com/free-openstack-storage-explorer.aspx
 
-Create a new open Openstack Accound
+Create a new open Openstack account
 
     # Setting up like this    
     

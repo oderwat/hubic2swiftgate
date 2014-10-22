@@ -22,7 +22,7 @@ But they encourage user to use the API and allow access to non default container
 * [Python-SwiftClient](#pythonswiftclient) - Command line client. Very useful (up to version 1.9 currently)
 * CyberDuck - FTP like access to all containers (using 'Swift'). As we only support v1.0 authentication you need to use the v1.0 devauth authentication supplied on the CyberDuck Homepage [Auth 1.0 Profile Info](https://trac.cyberduck.io/wiki/help/en/howto/openstack)
 * ExpanDrive2 - Mounts your HubiC Storage as external Drive (Select 'Open Stack Swift Storage. This really needs a __non self-signed__ certificate!)
-* [ftp-clouds](https://github.com/cloudfs/ftp-cloudfs) - Users reported that this works very good to abstract Hubic as FTP Server.
+* [ftp-cloudfs](https://github.com/cloudfs/ftp-cloudfs) - Users reported that this works very good to abstract Hubic as FTP Server.
 
 **I got limited success with:**
 

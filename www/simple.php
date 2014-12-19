@@ -106,38 +106,42 @@ $cacheKey=md5($client);
 $mode=false;
 
 list($request)=explode('?',$_SERVER['REQUEST_URI']);
+if ($_prefix != '') {
+  $pattern = '/^'.str_replace('/', '\\/', $_prefix).'/';
+  $request = preg_replace($pattern, '', $request);
+}
 
-switch($request) {
-	case $_prefix.'/v1.0':
-	case $_prefix.'/v1.0/':
-	case $_prefix.'/auth':
-	case $_prefix.'/auth/':
-	case $_prefix.'/auth/v1.0':
-	case $_prefix.'/auth/v1.0/':
+switch ($request) {
+	case '/v1.0':
+	case '/v1.0/':
+	case '/auth':
+	case '/auth/':
+	case '/auth/v1.0':
+	case '/auth/v1.0/':
 		$mode='swift';
 		break;
 
-	case $_prefix.'/register':
-	case $_prefix.'/register/':
+	case '/register':
+	case '/register/':
 		$mode='register';
 		break;
 
-	case $_prefix.'/usage':
-	case $_prefix.'/usage/':
+	case '/usage':
+	case '/usage/':
 		$mode='usage';
 		break;
 
-	case $_prefix.'/':
+	case '/':
 		$mode='home';
 		break;
 
-	case $_prefix.'/callback':
-	case $_prefix.'/callback/':
+	case '/callback':
+	case '/callback/':
 		$mode='callback';
 		break;
 
-	case $_prefix.'/success':
-	case $_prefix.'/success/':
+	case '/success':
+	case '/success/':
 		$mode='success';
 		break;
 

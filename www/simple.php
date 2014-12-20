@@ -23,6 +23,7 @@ define('CACHEPATH',dirname(__FILE__).'/../cache');
 define('CONFIGFILE',dirname(__FILE__).'/../config.php');
 
 // this reads the clients (but only supports one with name hubic right now!)
+$_prefix = '';
 include(CONFIGFILE);
 
 /*
@@ -85,13 +86,13 @@ if(!is_writable(CACHEPATH)) {
 }
 
 $port='';
-if($_SERVER['SERVER_PORT']!=443) {
+if($_SERVER['SERVER_PORT']!=443 && $_SERVER['SERVER_PORT']!=80) {
 	$port=":".$_SERVER['SERVER_PORT'];
 } else {
 	$port='';
 }
 
-$redirect_uri="https://".$_SERVER['SERVER_NAME'].$port."/callback/";
+$redirect_uri="https://".$_SERVER['SERVER_NAME'].$port.$_prefix."/callback/";
 
 $client='hubic'; // fixed for now
 
@@ -105,6 +106,12 @@ $cacheKey=md5($client);
 $mode=false;
 
 list($request)=explode('?',$_SERVER['REQUEST_URI']);
+// Remove _prefix from url, if any
+if ($_prefix!='') {
+  if (!strncmp($_prefix, $request, strlen($_prefix))) {
+    $request=substr($request, strlen($_prefix));
+  }
+}
 
 switch($request) {
 	case '/v1.0':
@@ -377,7 +384,7 @@ file_put_contents(CACHEPATH.'/'.$cacheKey,serialize(
 if($mode=='callback') {
 	header('HTTP/1.0 301 Redirect');
 	nocache();
-	header('Location: https://'.$_SERVER['HTTP_HOST'].'/success/');
+	header('Location: https://'.$_SERVER['HTTP_HOST'].$_prefix.'/success/');
 } else if($mode=='swift') {
 	header('X-Storage-Url: '.$storage->endpoint);
 	header('X-Auth-Token: '.$storage->token);

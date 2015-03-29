@@ -92,7 +92,15 @@ if($_SERVER['SERVER_PORT']!=443 && $_SERVER['SERVER_PORT']!=80) {
 	$port='';
 }
 
-$redirect_uri="https://".$_SERVER['SERVER_NAME'].$port.$_prefix."/callback/";
+
+function getScheme()
+{
+	$scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http';	
+	return $scheme;
+}
+
+
+$redirect_uri=getScheme()."://".$_SERVER['SERVER_NAME'].$port.$_prefix."/callback/";
 
 $client='hubic'; // fixed for now
 
@@ -386,7 +394,7 @@ file_put_contents(CACHEPATH.'/'.$cacheKey,serialize(
 if($mode=='callback') {
 	header('HTTP/1.0 301 Redirect');
 	nocache();
-	header('Location: https://'.$_SERVER['HTTP_HOST'].$_prefix.'/success/');
+	header('Location: '.getScheme().'://'.$_SERVER['HTTP_HOST'].$_prefix.'/success/');
 } else if($mode=='swift') {
 	header('X-Storage-Url: '.$storage->endpoint);
 	header('X-Auth-Token: '.$storage->token);

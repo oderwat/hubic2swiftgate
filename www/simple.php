@@ -23,7 +23,8 @@ define('CACHEPATH',dirname(__FILE__).'/../cache');
 define('CONFIGFILE',dirname(__FILE__).'/../config.php');
 
 // this reads the clients (but only supports one with name hubic right now!)
-$_prefix = '';
+$_prefix = $_SERVER['SCRIPT_NAME'];
+
 include(CONFIGFILE);
 
 /*
@@ -92,7 +93,15 @@ if($_SERVER['SERVER_PORT']!=443 && $_SERVER['SERVER_PORT']!=80) {
 	$port='';
 }
 
-$redirect_uri="https://".$_SERVER['SERVER_NAME'].$port.$_prefix."/callback/";
+
+function getScheme()
+{
+	$scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http';	
+	return $scheme;
+}
+
+
+$redirect_uri=getScheme()."://".$_SERVER['SERVER_NAME'].$port.$_prefix."/callback/";
 
 $client='hubic'; // fixed for now
 
@@ -159,7 +168,9 @@ if($mode=='home') {
 if(!$mode) {
 	header('HTTP/1.0 404 Not Found');
 	nocache();
-	print("Not Found!");
+	print("mode Not Found!");
+	$register_url = getScheme()."://".$_SERVER['SERVER_NAME'].$port.$_prefix."/register/?client=hubic&password=mypassword";
+	print ('<br>you need to register at the hubic api <a href="'.$register_url.'">'.$register_url.'</a>');
 	die();
 }
 
@@ -221,7 +232,9 @@ if($mode=='callback') {
 		$_GET['state']!=$client.':'.md5($clients[$client]['client_id'])) {
 		header('HTTP/1.0 412 Precondition failed');
 		nocache();
-		print("Illegal!");
+		print("Illegal! | ");
+		print('error: '.htmlspecialchars($_GET['error'])." | ");
+		print('error_description: '.htmlspecialchars($_GET['error_description']));
 		die();
 	}
 	$code=$_GET['code'];
@@ -384,7 +397,7 @@ file_put_contents(CACHEPATH.'/'.$cacheKey,serialize(
 if($mode=='callback') {
 	header('HTTP/1.0 301 Redirect');
 	nocache();
-	header('Location: https://'.$_SERVER['HTTP_HOST'].$_prefix.'/success/');
+	header('Location: '.getScheme().'://'.$_SERVER['HTTP_HOST'].$_prefix.'/success/');
 } else if($mode=='swift') {
 	header('X-Storage-Url: '.$storage->endpoint);
 	header('X-Auth-Token: '.$storage->token);

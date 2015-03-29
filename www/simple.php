@@ -221,7 +221,9 @@ if($mode=='callback') {
 		$_GET['state']!=$client.':'.md5($clients[$client]['client_id'])) {
 		header('HTTP/1.0 412 Precondition failed');
 		nocache();
-		print("Illegal!");
+		print("Illegal! | ");
+		print('error: '.htmlspecialchars($_GET['error'])." | ");
+		print('error_description: '.htmlspecialchars($_GET['error_description']));
 		die();
 	}
 	$code=$_GET['code'];

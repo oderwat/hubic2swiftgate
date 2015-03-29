@@ -167,7 +167,9 @@ if($mode=='home') {
 if(!$mode) {
 	header('HTTP/1.0 404 Not Found');
 	nocache();
-	print("Not Found!");
+	print("mode Not Found!");
+	$register_url = getScheme()."://".$_SERVER['SERVER_NAME'].$port.$_prefix."/register/?client=hubic&password=mypassword";
+	print ('<br>you need to register at the hubic api <a href="'.$register_url.'">'.$register_url.'</a>');
 	die();
 }
 

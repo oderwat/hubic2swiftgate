@@ -23,7 +23,8 @@ define('CACHEPATH',dirname(__FILE__).'/../cache');
 define('CONFIGFILE',dirname(__FILE__).'/../config.php');
 
 // this reads the clients (but only supports one with name hubic right now!)
-$_prefix = '';
+$_prefix = $_SERVER['SCRIPT_NAME'];
+
 include(CONFIGFILE);
 
 /*

@@ -359,6 +359,7 @@ if($mode=='usage') {
 
 	print('<pre>Usage: ');
 	print(format_bytes($usage->used).' / '.format_bytes($usage->quota));
+	print('</pre>');
 	die();
 }
 

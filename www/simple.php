@@ -2,7 +2,7 @@
 /*
     Copyright by Hans Raaf (aka OderWat) http://oderwat.de/ && https://github.com/oderwat
 
-    Losely based on work by Stéphane Depierrepont (aka Toorop) toorop@toorop.fr
+    Losely based on work by StÃ©phane Depierrepont (aka Toorop) toorop@toorop.fr
     and by Vincent Giersch : https://github.com/gierschv
 
     Licensed under the Apache License, Version 2.0 (the "License"); you may not
@@ -23,7 +23,7 @@ define('CACHEPATH',dirname(__FILE__).'/../cache');
 define('CONFIGFILE',dirname(__FILE__).'/../config.php');
 
 // this reads the clients (but only supports one with name hubic right now!)
-$_prefix = $_SERVER['SCRIPT_NAME'];
+$_prefix = ''; //$_SERVER['SCRIPT_NAME'];
 
 include(CONFIGFILE);
 

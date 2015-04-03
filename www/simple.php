@@ -22,12 +22,19 @@
 define('CACHEPATH',dirname(__FILE__).'/../cache');
 define('CONFIGFILE',dirname(__FILE__).'/../config.php');
 
-// find the prefix from the script url (empty in standard setup)
-$_prefix = dirname($_SERVER['SCRIPT_URL']);
-if($_prefix == '.') $_prefix = '';
-
 // this reads the clients (but only supports one with name hubic right now!)
 include(CONFIGFILE);
+
+// allows to set $_prefix from the config.php
+if(!isset($_prefix)) {
+	// find the prefix from the request uri
+	if(isset($_SERVER['REQUEST_URI'])) {
+		$_prefix = dirname($_SERVER['REQUEST_URI']);
+		if($_prefix == '.') $_prefix = '';
+	} else {
+		$_prefix = '';
+	}
+}
 
 /*
 function logfile($txt) {

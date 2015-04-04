@@ -27,13 +27,7 @@ include(CONFIGFILE);
 
 // allows to set $_prefix from the config.php
 if(!isset($_prefix)) {
-	// find the prefix from the request uri
-	if(isset($_SERVER['REQUEST_URI'])) {
-		$_prefix = dirname($_SERVER['REQUEST_URI']);
-		if($_prefix == '.') $_prefix = '';
-	} else {
-		$_prefix = '';
-	}
+	$_prefix = '';
 }
 
 /*

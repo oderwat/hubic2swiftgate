@@ -6,11 +6,11 @@ As HubiC exposes an OpenStack Swift API to the developer the idea to use it with
 
 Sadly the HubiC authorisation is currently limited to OAuth2. This is those thing wich redirects you to a Website where you have to agree to connect your Account to a client. You know these ones!
 
-To close this gap I made: hubic2swiftgate. A gateway which supports OAuth2 with api.hubic.com and has to be installed on an apache2 webserver using a ssl-certificate.
+To close this gap I made: hubic2swiftgate. A gateway which supports OAuth2 with api.hubic.com and has to be installed on an apache2 or nginx webserver using a ssl-certificate.
 
 ## Warning!
 
-This tool is not supported by OVH! 
+This tool is not supported by OVH!
 
 But they encourage user to use the API and allow access to non default containers explicitly on their forums! You find me on the Forum as "OderWat" too.
 
@@ -49,7 +49,8 @@ I suppose you have the code run in an apache2 server with php, curl, mod_rewrite
 
 The docroot of a virtual server is pointing at the root of this project and asume the server is available under https://yourserver.com/ for this description.
 
-Here some more help for that: [Setting up Apache2 for Hubic2SwiftGate](#apachesetup)
+Here some more help for that: [Setting up Apache2 for Hubic2SwiftGate](#apachesetup) or [Setting up nginx for Hubic2SwiftGate](#nginxsetup)
+
 
 In the current state the gateway only works for one HubiC Client which needs to be registered in the HubiC account panel (developer section).
 
@@ -88,12 +89,12 @@ To use it with "any" client supporting openstack swift protocol you need to set 
 #### <a name="duplicity"></a>Duplicity
 
     # Setting up the environment. Put it into .bashrc    
-    
+
     export SWIFT_AUTHURL='https://yourserver.com/auth/v1.0/'
     export SWIFT_USERNAME='hubic' // fixed atm
     export SWIFT_PASSWORD='mypassword' // from config.php
     export PASSPHRASE='somethingreallylongandsecret'
-    
+
     duplicity /mydatetobackup swift://containername
 
     # I personally use it for something like:
@@ -109,7 +110,7 @@ Grab it here: https://github.com/openstack/python-swiftclient
 Attention: I believe starting with 2.0 they broke support for "gzip" compressed swift backends! So make sure you use 1.8 or 1.9 until that got fixed. I use the Version you get with "git checkout 1.9.0"
 
     # Setting up the environment. Put it into .bashrc    
-    
+
     export ST_AUTH='https://yourserver.com/auth/v1.0/'
     export ST_USER='hubic' // fixed atm
     export ST_KEY='mypassword' // from config.php
@@ -169,5 +170,51 @@ After you got the certificates you can set up an apache virtual server *like* th
 Depending on where you setup the server you may need to create a port mapping from outside in you router if you want to use the gateway from another than your own network.
 
 It is fine to install this all "inside" your own network as long as your local browser has access to it! You even can use localhost! My scope is different in that I am using the gateway from many different servers in different locations.
+
+#### <a name="nginxsetup"></a> Setting up nginx for HubiC2SwiftGate
+
+The creation of the self-signed certificate is the same as for apache2. A possible nginx-configuration would be:
+
+```
+server  {
+          listen 443 ssl;
+
+          #access_log  /var/log/nginx/hsgate.access.log;
+          error_log   /var/log/nginx/hsgate.error.log error;
+
+          server_name hsgate;
+
+          ssl                  on;
+          ssl_certificate      /etc/nginx/ssl/hsgate.crt;
+          ssl_certificate_key  /etc/nginx/ssl/hsgate.key;
+
+          root /var/www/hsgate/;
+          index index.php;
+
+          location / {
+                root /var/www/hsgate/html;
+                try_files $uri $uri/ /simple.php?$args;
+
+              }
+
+
+          location ~ \.php$ {
+                fastcgi_index  index.php;
+                fastcgi_param  SCRIPT_FILENAME $document_root$fastcgi_script_name;
+                include fastcgi_params;
+                fastcgi_pass  unix:/var/run/php5-fpm.sock;
+              }
+
+
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+                root /usr/share/nginx/html;
+        }
+
+      }
+```
+In this config php5-fpm is used to serve .php-files with nginx. But there are also some other ways to use nginx with PHP. The ssl config is also quite minimal and if you want to use this in production, it would be a good suggestion to extend it.
 
 P.S.: This work is dedicated to my friends from <a href="http://www.metatexx.de/#hsgate">METATEXX GmbH</a>!

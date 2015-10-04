@@ -19,7 +19,7 @@ But they encourage user to use the API and allow access to non default container
 **While using a real (non self-signed) certificate I got 100% compabillity with:**
 
 * [Duplicity](#duplicity) - THE backup solution with encryption and diff (using: swift:// backend, this was added in 0.6.22 afaik)
-* [Python-SwiftClient](#pythonswiftclient) - Command line client. Very useful (up to version 1.9 currently)
+* [Python-SwiftClient](#pythonswiftclient) - Command line client. Very useful.
 * CyberDuck - FTP like access to all containers (using 'Swift'). As we only support v1.0 authentication you need to use the v1.0 devauth authentication supplied on the CyberDuck Homepage [Auth 1.0 Profile Info](https://trac.cyberduck.io/wiki/help/en/howto/openstack)
 * ExpanDrive2 - Mounts your HubiC Storage as external Drive (Select 'Open Stack Swift Storage. This really needs a __non self-signed__ certificate!)
 * [ftp-cloudfs](https://github.com/cloudfs/ftp-cloudfs) - Users reported that this works very good to abstract Hubic as FTP Server.
@@ -105,15 +105,16 @@ To use it with "any" client supporting openstack swift protocol you need to set 
 
 #### <a name="pythonswiftclient"></a>Python-SwiftClient
 
-Grab it here: https://github.com/openstack/python-swiftclient
+Grab it here: https://github.com/openstack/python-swiftclient , or install with pip: pip install python-swiftclient
 
-Attention: I believe starting with 2.0 they broke support for "gzip" compressed swift backends! So make sure you use 1.8 or 1.9 until that got fixed. I use the Version you get with "git checkout 1.9.0"
+Attention: I believe starting with 2.0 they broke support for "gzip" compressed swift backends! The problem is now fixed in version 2.6, so make sure you use 1.9 or 2.6 or more recent, but not an older 2.x.
 
     # Setting up the environment. Put it into .bashrc    
 
     export ST_AUTH='https://yourserver.com/auth/v1.0/'
     export ST_USER='hubic' // fixed atm
     export ST_KEY='mypassword' // from config.php
+    export SWIFTCLIENT_INSECURE=true // if you use a self-signed certificate
 
     # Examples
     swift list --lh

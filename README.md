@@ -51,6 +51,7 @@ The docroot of a virtual server is pointing at the root of this project and asum
 
 Here some more help for that: [Setting up Apache2 for Hubic2SwiftGate](#apachesetup) or [Setting up nginx for Hubic2SwiftGate](#nginxsetup)
 
+There is also a docker image available from [here](https://github.com/jkaberg/docker-hubic2swiftgate).
 
 In the current state the gateway only works for one HubiC Client which needs to be registered in the HubiC account panel (developer section).
 
@@ -145,7 +146,7 @@ After you got the certificates you can set up an apache virtual server *like* th
 
     <VirtualHost *:443>
       ServerName hsgate.domain.name
-      DocumentRoot /var/www/hsgate/
+      DocumentRoot /var/www/hsgate/www/
 
       SSLEngine on
       SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP
@@ -155,7 +156,7 @@ After you got the certificates you can set up an apache virtual server *like* th
       CustomLog /var/log/apache2/hsgate_ssl_access.log combined
       ErrorLog /var/log/apache2/hsgate_ssl_error.log
 
-      <Directory "/var/www/hsgate/">
+      <Directory "/var/www/hsgate/www/">
         Options Indexes FollowSymLinks
         AllowOverride All
         Order allow,deny
@@ -166,7 +167,7 @@ After you got the certificates you can set up an apache virtual server *like* th
 
     </VirtualHost>
 
-*Notice: This is just an example. You need to adjust the paths for your system and maybe more*
+*Notice: This is just an example. You need to adjust the paths for your system and maybe more. Here `hsgate` is the repository root folder which contains the `www` folder which the virtual host needs to point at.*
 
 Depending on where you setup the server you may need to create a port mapping from outside in you router if you want to use the gateway from another than your own network.
 

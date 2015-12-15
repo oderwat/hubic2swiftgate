@@ -96,11 +96,14 @@ if($_SERVER['SERVER_PORT']!=443 && $_SERVER['SERVER_PORT']!=80) {
 	$port='';
 }
 
-
-function getScheme()
-{
-	$scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 'https' : 'http';	
-	return $scheme;
+function getScheme() {
+    if(isset($_SERVER['OVERRIDE_HTTPS']) && $_SERVER['OVERRIDE_HTTPS']) {
+        return 'https';
+    } else if(isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') {
+        return 'https';
+    } else {
+        return 'http';
+    }
 }
 
 

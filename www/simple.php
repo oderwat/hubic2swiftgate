@@ -109,7 +109,12 @@ function getScheme() {
 
 $redirect_uri=getScheme()."://".$_SERVER['SERVER_NAME'].$port.$_prefix."/callback/";
 
-$client='hubic'; // fixed for now
+if (isset($_GET['client']))
+	$client= $_GET['client'];
+else if (isset($_GET['state']))
+	$client = substr($_GET['state'], 0, strpos($_GET['state'], ':'));
+elseif (isset($_SERVER['HTTP_X_AUTH_USER']))
+	$client = $_SERVER['HTTP_X_AUTH_USER'];
 
 $client_id=$clients[$client]['client_id'];
 $client_secret=$clients[$client]['client_secret'];

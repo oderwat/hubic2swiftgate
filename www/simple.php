@@ -537,7 +537,7 @@ file_put_contents(CACHEPATH.'/'.$cacheKey,serialize(
 		'refresh_token'=>$refresh_token
 	)));
 
-if($mode=='callback') {
+if($mode=='callback' || $mode=='autoregister') {
 	header('HTTP/1.0 301 Redirect');
 	nocache();
 	header('Location: '.getScheme().'://'.$_SERVER['HTTP_HOST'].$_prefix.'/success/');
@@ -546,9 +546,6 @@ if($mode=='callback') {
 	header('X-Auth-Token: '.$storage->token);
 	header('HTTP/1.0 204 No Content');
 //	header('HTTP/1.0 200 OK'); // dulwich swift-repo does not understand 204
-	nocache();
-} else if($mode=='autoregister') {
-	header('HTTP/1.0 200 OK');
 	nocache();
 } else {
 	header('HTTP/1.0 404 Not Found');

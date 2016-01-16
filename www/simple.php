@@ -536,6 +536,9 @@ if($mode=='callback') {
 	header('HTTP/1.0 204 No Content');
 //	header('HTTP/1.0 200 OK'); // dulwich swift-repo does not understand 204
 	nocache();
+} else if($mode=='autoregster') {
+	header('HTTP/1.0 200 OK');
+	nocache();
 } else {
 	header('HTTP/1.0 404 Not Found');
 	nocache();

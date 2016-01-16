@@ -83,6 +83,12 @@ I am using the the user "hubic" and the password (aka authkey) from the `config.
 
 The real authentication is done with the OAuth2 tokens from the Hubic API "in the background" which then gets the OpenStack Tokens for the API to the filestorage.
 
+### Registering the client with your HubiC account without user intervention
+
+Visit: `https://yourserver.com/autoregister/?client=hubic&password=mypassword&hubic_user=myhubiclogin&hubic_password=myhubicpassword`
+
+It will look on `config.php` for HubiC credentials. It will get fill the form and send it back without user intervention.
+
 ###  Configuring the Swift Clients
 
 To use it with "any" client supporting openstack swift protocol you need to set those up similiar to these examples:

@@ -242,6 +242,17 @@ if($mode=='autoregister') {
 		die();
 	}
 
+	if(!isset($_GET['hubic_user']) ||
+		!isset($_GET['hubic_password']) ) {
+		header('HTTP/1.0 403 Access Denied');
+		nocache();
+		print("ERROR : Need hubic user and hubic password");
+		die();
+	}
+
+	$hubic_user = $_GET['hubic_user'];
+	$hubic_password = $_GET['hubic_password'];
+
 	$formdata = array (
 		'client_id' => $client_id,
 		'redirect_uri' => urlencode($clients[$client]['autoredirect_uri']),
@@ -308,8 +319,8 @@ if($mode=='autoregister') {
 		'activate' => 'w',
 		'links' => array( 'd', 'r', 'w') ,
 		'action' => 'accepted',
-		'login' => urlencode($clients[$client]['hubic_user']),
-		'user_pwd' => $clients[$client]['hubic_password']
+		'login' => urlencode($hubic_user),
+		'user_pwd' => urlencode($hubic_password)
 	);
 
    // Join form data into a string
@@ -536,7 +547,7 @@ if($mode=='callback') {
 	header('HTTP/1.0 204 No Content');
 //	header('HTTP/1.0 200 OK'); // dulwich swift-repo does not understand 204
 	nocache();
-} else if($mode=='autoregster') {
+} else if($mode=='autoregister') {
 	header('HTTP/1.0 200 OK');
 	nocache();
 } else {

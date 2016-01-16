@@ -363,15 +363,6 @@ if($mode=='callback') {
 		$_GET['state']!=$client.':'.md5($clients[$client]['client_id'])) {
 		header('HTTP/1.0 412 Precondition failed');
 		nocache();
-		print("<br>");
-		print('code:'.$_GET['code']);
-		print("<br>");
-		print('state:'.$_GET['state']);
-		print("<br>");
-		print('compare state:'.$client.':'.md5($clients[$client]['client_id']));
-		print("<br>");
-		print('client_id:'.$client.':'.$clients[$client]['client_id']);
-		print("<br>");
 		print("Illegal! | ");
 		print('error: '.htmlspecialchars($_GET['error'])." | ");
 		print('error_description: '.htmlspecialchars($_GET['error_description']));

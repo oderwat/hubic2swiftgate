@@ -255,7 +255,7 @@ if($mode=='autoregister') {
 
 	$formdata = array (
 		'client_id' => $client_id,
-		'redirect_uri' => urlencode($clients[$client]['autoredirect_uri']),
+		'redirect_uri' => urlencode(getScheme()."://".$_SERVER['SERVER_NAME'].$port.$_prefix."/callback/"),
 		'scope' => 'usage.r,account.r,getAllLinks.r,credentials.r,activate.w,links.drw',
 		'response_type' => 'code',
 		'state' => $client.':'.md5($client_id)

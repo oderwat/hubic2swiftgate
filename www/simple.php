@@ -143,6 +143,11 @@ switch($request) {
 		$mode='register';
 		break;
 
+	case '/autoregister':
+	case '/autoregister/':
+		$mode='autoregister';
+		break;
+
 	case '/usage':
 	case '/usage/':
 		$mode='usage';
@@ -228,6 +233,126 @@ if($mode=='register') {
 	die();
 }
 
+if($mode=='autoregister') {
+	if(!isset($_GET['client']) || $_GET['client']!=$client ||
+		!isset($_GET['password']) || $_GET['password']!=$clients[$client]['password']) {
+		header('HTTP/1.0 403 Access Denied');
+		nocache();
+		print("ERROR : Access Denied! Wrong Client or Password");
+		die();
+	}
+
+	$formdata = array (
+		'client_id' => $client_id,
+		'redirect_uri' => urlencode($clients[$client]['autoredirect_uri']),
+		'scope' => 'usage.r,account.r,getAllLinks.r,credentials.r,activate.w,links.drw',
+		'response_type' => 'code',
+		'state' => $client.':'.md5($client_id)
+	);
+
+	// Join form data into a string
+
+	$fields_string = '';
+	foreach($formdata as $key=>$value) {
+		$fields_string .= $key.'='.$value.'&';
+	}
+
+	$uri='https://api.hubic.com/oauth/auth/?'.$fields_string;
+
+	$curlOptions = array(
+	    CURLOPT_RETURNTRANSFER => TRUE,
+	    CURLOPT_FOLLOWLOCATION => TRUE,
+	    CURLOPT_VERBOSE => TRUE,
+	    CURLOPT_FILETIME => TRUE,
+	);
+
+	// Request Token. First Petition to HubiC
+
+    $c = curl_init($uri);
+	curl_setopt_array($c, $curlOptions);
+	$content = curl_exec($c);
+	$http_retcode = curl_getinfo($c, CURLINFO_HTTP_CODE);
+	curl_close($c);
+
+	if ($http_retcode !== 200) {
+		header('HTTP/1.0 200');
+		nocache();
+		print("HubiC api server responded with return code: ".$http_retcode);
+		print("<br>");
+		print("Failed to request authorization code, check client_id or redirect_ur");
+		print("<br>* 'redirect_uri' => $redirect_uri");
+		print("<br>* 'client_id' => ".$client_id);
+		die();
+	}
+
+	// Get Oauth ID from Hubic form
+
+	$result = preg_match ('/<input type="hidden" name="oauth" value="([0-9]*)"/', $content, $oauthid);
+	if (!$result) {
+		header('HTTP/1.0 200');
+		nocache();
+		print ("\n");
+		print("ERROR: Oauth ID not found");
+		print ("\n");
+		die();
+	}
+
+	// Acess token. Authenticate Hubic with Oauth ID, hubic user/pass
+
+	$formdata = array (
+		'oauth' => $oauthid[1],
+		'usage' => 'r',
+		'account' => 'r',
+		'getAllLinks' => 'r',
+		'credentials' => 'r',
+		'activate' => 'w',
+		'links' => array( 'd', 'r', 'w') ,
+		'action' => 'accepted',
+		'login' => urlencode($clients[$client]['hubic_user']),
+		'user_pwd' => $clients[$client]['hubic_password']
+	);
+
+   // Join form data into a string
+
+    $fields_string = '';
+    $parameter_count = 0;
+	foreach($formdata as $key=>$value) {
+		if (!is_array($value)) {
+			$fields_string .= $key.'='.$value.'&';
+			$parameter_count++;
+		} else {
+			foreach($value as $item) {
+				$fields_string .= $key.'='.$item.'&';
+				$parameter_count++;
+			}
+		}
+	}
+
+	$fields_string = rtrim($fields_string, '&');
+
+	// Send data to Hubic API
+
+	$uri='https://api.hubic.com/oauth/auth/';
+	$c = curl_init($uri);
+	$curlOptions[CURLOPT_URL] = $uri;
+	$curlOptions[CURLOPT_POST] = $parameter_count + 1;
+	$curlOptions[CURLOPT_POSTFIELDS] = $fields_string;
+	curl_setopt_array($c, $curlOptions);
+	$content = curl_exec($c);
+	$http_retcode = curl_getinfo($c, CURLINFO_HTTP_CODE);
+	curl_close($c);
+
+	if ($http_retcode !== 200) {
+		header('HTTP/1.0 200');
+		nocache();
+		print("Error on logon or user_pw. Hubic api server responded with return code: ".$http_retcode);
+		//print("<br>count: ". (int) $parameter_count + 1 );
+		//print("<br>URI: ".$uri.'?'.$fields_string);
+		//print("<br>URI: ".$uri);
+		die();
+	}
+}
+
 $access_token=false;
 $access_expires=0;
 $refresh_token=false;
@@ -238,6 +363,15 @@ if($mode=='callback') {
 		$_GET['state']!=$client.':'.md5($clients[$client]['client_id'])) {
 		header('HTTP/1.0 412 Precondition failed');
 		nocache();
+		print("<br>");
+		print('code:'.$_GET['code']);
+		print("<br>");
+		print('state:'.$_GET['state']);
+		print("<br>");
+		print('compare state:'.$client.':'.md5($clients[$client]['client_id']));
+		print("<br>");
+		print('client_id:'.$client.':'.$clients[$client]['client_id']);
+		print("<br>");
 		print("Illegal! | ");
 		print('error: '.htmlspecialchars($_GET['error'])." | ");
 		print('error_description: '.htmlspecialchars($_GET['error_description']));

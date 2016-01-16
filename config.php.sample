@@ -1,6 +1,9 @@
 <?php
 $clients=array(
 	'hubic'=>array(
+		'autoredirect_uri'=>'https://localhost/callback/', // only needed for autoregister
+		'hubic_user'=>'xxxx......(put your hubic login here, only for autoregister)',
+		'hubic_password'=>'xxxx......(put your hubic password here, only for autoregister)',
 		'password'=>'mypassword',
 		'client_id'=>'api_hubic_xxxx...(put yours here)',
 		'client_secret'=>'xxxx......(put yours here)'

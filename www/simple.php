@@ -253,9 +253,13 @@ if($mode=='autoregister') {
 	$hubic_user = $_GET['hubic_user'];
 	$hubic_password = $_GET['hubic_password'];
 
+        if (is_array($clients[$client]) && array_key_exists('autoredirect_uri', $clients[$client])) {
+		$redirect_uri = $clients[$client]['autoredirect_uri'];
+	}
+
 	$formdata = array (
 		'client_id' => $client_id,
-		'redirect_uri' => urlencode(getScheme()."://".$_SERVER['SERVER_NAME'].$port.$_prefix."/callback/"),
+		'redirect_uri' => urlencode($redirect_uri),
 		'scope' => 'usage.r,account.r,getAllLinks.r,credentials.r,activate.w,links.drw',
 		'response_type' => 'code',
 		'state' => $client.':'.md5($client_id)

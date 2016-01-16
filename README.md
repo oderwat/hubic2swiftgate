@@ -89,6 +89,12 @@ Visit: `https://yourserver.com/autoregister/?client=hubic&password=mypassword&hu
 
 It will get fill the form and send it back without user intervention.
 
+Remove comment for `autoredirect_uri` on `config.php` in case you need to force the redirect to a certain URI. For example, if you want to access to use `https://yourserver.com:8080/autoregister/?client=hubic&password=mypassword&hubic_user=myhubiclogin&hubic_password=myhubicpassword`, that internally is a redirection to port 80 inside there is a VM or a container, then you could use:
+
+```php
+     'autoredirect_uri'=>'https://localhost/callback/', // only needed for autoregister in some cases
+```
+
 ###  Configuring the Swift Clients
 
 To use it with "any" client supporting openstack swift protocol you need to set those up similiar to these examples:

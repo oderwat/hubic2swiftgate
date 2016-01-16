@@ -87,7 +87,7 @@ The real authentication is done with the OAuth2 tokens from the Hubic API "in th
 
 Visit: `https://yourserver.com/autoregister/?client=hubic&password=mypassword&hubic_user=myhubiclogin&hubic_password=myhubicpassword`
 
-It will look on `config.php` for HubiC credentials. It will get fill the form and send it back without user intervention.
+It will get fill the form and send it back without user intervention.
 
 ###  Configuring the Swift Clients
 

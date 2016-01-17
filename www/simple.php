@@ -89,6 +89,8 @@ if(!is_writable(CACHEPATH)) {
 	internal_error(CACHEPATH .' is not writable');
 }
 
+$client='hubic'; // fixed for now
+
 $port='';
 if($_SERVER['SERVER_PORT']!=443 && $_SERVER['SERVER_PORT']!=80) {
 	$port=":".$_SERVER['SERVER_PORT'];
@@ -106,10 +108,11 @@ function getScheme() {
     }
 }
 
-
-$redirect_uri=getScheme()."://".$_SERVER['SERVER_NAME'].$port.$_prefix."/callback/";
-
-$client='hubic'; // fixed for now
+if(isset($clients[$client]['redirect_uri'])) {
+  $redirect_uri = $clients[$client]['redirect_uri'];
+} else {
+	$redirect_uri=getScheme()."://".$_SERVER['SERVER_NAME'].$port.$_prefix."/callback/";
+}
 
 $client_id=$clients[$client]['client_id'];
 $client_secret=$clients[$client]['client_secret'];
@@ -252,10 +255,6 @@ if($mode=='autoregister') {
 
 	$hubic_user = $_GET['hubic_user'];
 	$hubic_password = $_GET['hubic_password'];
-
-        if (is_array($clients[$client]) && array_key_exists('autoredirect_uri', $clients[$client])) {
-		$redirect_uri = $clients[$client]['autoredirect_uri'];
-	}
 
 	$formdata = array (
 		'client_id' => $client_id,

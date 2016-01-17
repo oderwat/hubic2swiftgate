@@ -1,8 +1,11 @@
 <?php
+// $_prefix='' // move the hubic2swiftgate into a subdirectory of an existing server
+
 $clients=array(
 	'hubic'=>array(
-//		'autoredirect_uri'=>'https://localhost/callback/', // only needed for autoregister in some cases
+//		'redirect_uri'=>'https://localhost/callback/', // override automatic uri
 		'password'=>'mypassword',
 		'client_id'=>'api_hubic_xxxx...(put yours here)',
 		'client_secret'=>'xxxx......(put yours here)'
-	));
+	)
+);

@@ -83,17 +83,21 @@ I am using the the user "hubic" and the password (aka authkey) from the `config.
 
 The real authentication is done with the OAuth2 tokens from the Hubic API "in the background" which then gets the OpenStack Tokens for the API to the filestorage.
 
+### Overriding the automatic redirect uri (callback)
+
+There are use cases where the redirect uri calculated by the server is different to the real uri. This can happen if your server is behind some proxy or uses port mapping and you are using autoregister from internal or a browser from external. In that case the automatically generated redirect_uri does not match what is needed to really access the server and the callback after (auto)register fails to reach the server.
+
+In those cases you remove the comment and set your value for `redirect_uri` in `config.php` to force the callback to a certain URI. For example, if you want to access to use `https://yourserver.com:8080/autoregister/?client=hubic&password=mypassword&hubic_user=myhubiclogin&hubic_password=myhubicpassword`, that internally is a redirection to port 80 inside a VM or a container, then you could use:
+
+```php
+     'redirect_uri'=>'https://localhost/callback/', // only needed for special use cases
+```
+
 ### Registering the client with your HubiC account without user intervention
 
 Visit: `https://yourserver.com/autoregister/?client=hubic&password=mypassword&hubic_user=myhubiclogin&hubic_password=myhubicpassword`
 
 It will get fill the form and send it back without user intervention.
-
-Remove comment and set your value for `autoredirect_uri` on `config.php` in case you need to force the redirect to a certain URI. For example, if you want to access to use `https://yourserver.com:8080/autoregister/?client=hubic&password=mypassword&hubic_user=myhubiclogin&hubic_password=myhubicpassword`, that internally is a redirection to port 80 inside a VM or a container, then you could use:
-
-```php
-     'autoredirect_uri'=>'https://localhost/callback/', // only needed for autoregister in some cases
-```
 
 ###  Configuring the Swift Clients
 

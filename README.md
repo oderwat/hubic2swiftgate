@@ -1,5 +1,7 @@
 # HubiC to OpenStack Swift Gateway
 
+[![Join the chat at https://gitter.im/oderwat/hubic2swiftgate](https://badges.gitter.im/oderwat/hubic2swiftgate.svg)](https://gitter.im/oderwat/hubic2swiftgate?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 With HubiC now offering 10 TB (yes 10.000 GB) for 5,- Euro a month (or 50,- Euro a year) it becomes extremly interesting as datastorage for multiple and automated tasks!
 
 As HubiC exposes an OpenStack Swift API to the developer the idea to use it with existing swift client implementations is a natural thing.
